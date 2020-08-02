@@ -1,5 +1,5 @@
 /*
-Copyright © 2020 NAME HERE <EMAIL ADDRESS>
+Copyright 2020 ContainerCraft.io emcee@braincraft.io
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -24,13 +24,15 @@ import (
 // bundleCmd represents the bundle command
 var bundleCmd = &cobra.Command{
 	Use:   "bundle",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Koffer Engine Bundle Utility",
+	Long: `
+  Bundle is intended to run against koffer collector plugin
+  repos to build artifact bundles capable of transporting all
+  dependencies required for build or operations time engagement.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+  Koffer bundles are designed to be deployed with the Konductor 
+  engine and artifacts served via the CloudCtl delivery pod.
+`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("bundle called")
 	},

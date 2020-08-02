@@ -1,5 +1,5 @@
 /*
-Copyright © 2020 NAME HERE <EMAIL ADDRESS>
+Copyright 2020 ContainerCraft.io emcee@braincraft.io
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -24,13 +24,15 @@ import (
 // mirrorCmd represents the mirror command
 var mirrorCmd = &cobra.Command{
 	Use:   "mirror",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "mirror artifacts to arbitrary repository",
+	Long: `
+Koffer Engine Mirror:
+  The mirror function enables plugins to store artifacts
+  in an arbitrary registry target.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+  NOTICE: this feature is currently experimental and and
+  does not include registry authentication capability yet.
+`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("mirror called")
 	},
