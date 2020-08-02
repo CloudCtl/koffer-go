@@ -15,7 +15,7 @@ limitations under the License.
 */
 package main
 
-import "git@github.com:CodeSparta/koffer-go.git/cmd"
+import "github.com/CodeSparta/koffer-go/cmd"
 
 func main() {
 	cmd.Execute()
