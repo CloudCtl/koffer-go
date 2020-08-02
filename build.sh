@@ -11,8 +11,7 @@ rm /bin/koffer 2>/dev/null
 rm -rf /root/koffer 2>/dev/null
 mkdir -p /tmp/bin
 
-source ~/.bashrc
-gitup $@
+git stage -A; git commit -m "$@"; git push origin
 ${goCmd} get github.com/CodeSparta/koffer-go/cmd
 ${goCmd} build
 
