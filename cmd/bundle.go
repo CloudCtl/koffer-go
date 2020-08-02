@@ -26,6 +26,7 @@ var bundleCmd = &cobra.Command{
 	Use:   "bundle",
 	Short: "Koffer Engine Bundle Utility",
 	Long: `
+Koffer Engine Bundle:
   Bundle is intended to run against koffer collector plugin
   repos to build artifact bundles capable of transporting all
   dependencies required for build or operations time engagement.
