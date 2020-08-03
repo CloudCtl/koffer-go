@@ -65,15 +65,14 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	bundleCmd.Flags().BoolP("help", "h", false, "koffer bundle help")
+	bundleCmd.Flags().StringVarP("service", "s", "github.com", "Git Server")
+	bundleCmd.Flags().StringVarP("user", "u", "CodeSparta", "Repo {User,Organization}/path")
+        bundleCmd.Flags().StringVarP("repo", "r", "collector-infra", "Plugin Repo Name")
+        bundleCmd.Flags().StringVarP("branch", "b", "master", "Git Branch")
+        bundleCmd.Flags().StringVarP("dir", "d", "/root/koffer", "Clone Path")
 }
 
 func core() {
-
-    svcGit := flag.String("git", "github.com", "Git Server")
-    orgGit := flag.String("org", "CodeSparta", "Repo Owner/path")
-    repoGit := flag.String("repo", "collector-infra", "Plugin Repo Name")
-    branchGit := flag.String("branch", "master", "Git Branch")
-    pathClone := flag.String("dir", "/root/koffer", "Clone Path")
 
     flag.Parse()
 
@@ -81,30 +80,30 @@ func core() {
     kpullsecret.WriteConfig()
 
     // build url from vars
-    gitslice := []string{ "https://", *svcGit, "/", *orgGit, "/", *repoGit }
+    gitslice := []string{ "https://", service, "/", user, "/", repo }
     url := strings.Join(gitslice, "")
 
     // set branch
-    branchslice := []string{ "refs/heads/", *branchGit }
+    branchslice := []string{ "refs/heads/", branch }
     branch := strings.Join(branchslice, "")
 
     runvars := "\n" +
-               "   Service: " + *svcGit + "\n" +
-               "  Org/Path: " + *orgGit + "\n" +
-               "      Repo: " + *repoGit + "\n" +
-               "    Branch: " + *branchGit + "\n" +
-               "      Path: " + *pathClone + "\n" +
-               "       URL: " + url + "\n" +
-               "       CMD: git clone " + url + *pathClone + "\n"
+               "    Service: " + service + "\n" +
+               "  User/Path: " + user + "\n" +
+               "       Repo: " + repo + "\n" +
+               "     Branch: " + branch + "\n" +
+               "       Dest: " + dir + "\n" +
+               "        URL: " + url + "\n" +
+               "        CMD: git clone " + url + dir + "\n"
     kcorelog.Info(runvars)
 
     // Clone the given repository to the given directory
-    kcorelog.Info("git clone %s %s", url, *pathClone)
+    kcorelog.Info("git clone %s %s", url, dir)
 
     // purge pre-existing artifacts
-    RemoveContents(*pathClone)
+    RemoveContents(dir)
 
-    r, err := git.PlainClone(*pathClone, false, &git.CloneOptions{
+    r, err := git.PlainClone(dir, false, &git.CloneOptions{
         URL:               url,
         RecurseSubmodules: git.DefaultSubmoduleRecursionDepth,
 	ReferenceName:     plumbing.ReferenceName(branch),
