@@ -30,7 +30,7 @@ import (
     "github.com/go-git/go-git/plumbing"
     kpullsecret "github.com/CodeSparta/koffer-go/plugins/auth"
     kcorelog "github.com/CodeSparta/koffer-go/plugins/log"
-    "github.com/CodeSparta/koffer-go/plugins/err"
+//  "github.com/CodeSparta/koffer-go/plugins/err"
 //  "github.com/codesparta/koffer/entrypoint/src"
 )
 
@@ -127,7 +127,7 @@ func RemoveContents(dir string) error {
 func gitCloneRepo(format string, args ...interface{}) {
 
     // Clone Git Repository
-    r, err := git.PlainClone(*pathClone, false, &git.CloneOptions{
+    r, err := git.PlainClone(dir, false, &git.CloneOptions{
         URL:               url,
         RecurseSubmodules: git.DefaultSubmoduleRecursionDepth,
 	ReferenceName:     plumbing.ReferenceName(branch),
