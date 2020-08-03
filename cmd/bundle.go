@@ -61,28 +61,12 @@ Koffer Engine Bundle:
 
 func init() {
 	rootCmd.AddCommand(bundleCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// bundleCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
 	bundleCmd.Flags().BoolP("help", "h", false, "koffer bundle help")
 	bundleCmd.Flags().StringVarP(&service, "service", "s", "github.com", "Git Server")
 	bundleCmd.Flags().StringVarP(&user, "user", "u", "CodeSparta", "Repo {User,Organization}/path")
         bundleCmd.Flags().StringVarP(&repo, "repo", "r", "collector-infra", "Plugin Repo Name")
         bundleCmd.Flags().StringVarP(&branch, "branch", "b", "master", "Git Branch")
         bundleCmd.Flags().StringVarP(&dir, "dir", "d", "/root/koffer", "Clone Path")
-/*
-	bundleCmd.Flags().StringVarP(service *string, "service", "s", "github.com", "Git Server")
-	bundleCmd.Flags().StringVarP(user *string, "user", "u", "CodeSparta", "Repo {User,Organization}/path")
-        bundleCmd.Flags().StringVarP(repo *string, "repo", "r", "collector-infra", "Plugin Repo Name")
-        bundleCmd.Flags().StringVarP(branch *string, "branch", "b", "master", "Git Branch")
-        bundleCmd.Flags().StringVarP(dir *string, "dir", "d", "/root/koffer", "Clone Path")
-*/
 }
 
 func core() {
@@ -111,72 +95,13 @@ func core() {
     kcorelog.Info(runvars)
 
     // Clone the given repository to the given directory
-    kcorelog.Info("git clone %s %s", url, dir)
+    kcorelog.Info(" >>  git clone %s %s", url, dir)
 
     // purge pre-existing artifacts
     RemoveContents(dir)
-
-    r, err := git.PlainClone(dir, false, &git.CloneOptions{
-        URL:               url,
-        RecurseSubmodules: git.DefaultSubmoduleRecursionDepth,
-	ReferenceName:     plumbing.ReferenceName(branch),
-	SingleBranch:      true,
-	Tags:              git.NoTags,
-    })
-    ksanity.CheckIfError(err)
-    // ... retrieving the branch being pointed by HEAD
-    ref, err := r.Head()
-    ksanity.CheckIfError(err)
-
-    // ... retrieving the commit object
-    commit, err := r.CommitObject(ref.Hash())
-    ksanity.CheckIfError(err)
-
-    fmt.Println(commit)
-
-    registry := exec.Command("/usr/bin/run_registry.sh")
-    err = registry.Start()
-    if err != nil {
-        log.Fatal(err)
-    }
-    err = registry.Wait()
-
-    cmd := exec.Command("./site.yml")
-
-    var stdout, stderr []byte
-    var errStdout, errStderr error
-    stdoutIn, _ := cmd.StdoutPipe()
-    stderrIn, _ := cmd.StderrPipe()
-    err = cmd.Start()
-    if err != nil {
-        log.Fatalf("cmd.Start() failed with '%s'\n", err)
-    }
-
-    var wg sync.WaitGroup
-    wg.Add(1)
-    go func() {
-        stdout, errStdout = kcorelog.CopyAndCapture(os.Stdout, stdoutIn)
-        wg.Done()
-    }()
-
-    stderr, errStderr = kcorelog.CopyAndCapture(os.Stderr, stderrIn)
-
-    wg.Wait()
-
-    err = cmd.Wait()
-    if err != nil {
-        log.Fatalf("cmd.Run() failed with %s\n", err)
-    }
-    if errStdout != nil || errStderr != nil {
-        log.Fatal("failed to capture stdout \n")
-    }
-
-    errStr := string(stderr)
-    //outStr, errStr := string(stdout), string(stderr)
-    //fmt.Printf("\nout:\n%s\n", outStr)
-    if stderr != nil {
-        fmt.Printf("\nerr:\n%s\n", errStr)
-    }
+    gitCloneRepo(url)
+    cmdRegistryStart()
+    cmdPluginRun()
 }
 
 func RemoveContents(dir string) error {
@@ -197,3 +122,67 @@ func RemoveContents(dir string) error {
     }
     return nil
 }
+
+// Git Clone Plugin Repository
+func gitCloneRepo(format string, args ...interface{}) {
+
+    // Clone Git Repository
+    r, err := git.PlainClone(*pathClone, false, &git.CloneOptions{
+        URL:               url,
+        RecurseSubmodules: git.DefaultSubmoduleRecursionDepth,
+	ReferenceName:     plumbing.ReferenceName(branch),
+	SingleBranch:      true,
+	Tags:              git.NoTags,
+    })
+    CheckIfError(err)
+    ref, err := r.Head()
+    CheckIfError(err)
+    commit, err := r.CommitObject(ref.Hash())
+    CheckIfError(err)
+    // Print Latest Commit Info
+    fmt.Println(commit)
+}
+
+func cmdRegistryStart() {
+    // Start Internal Registry Service 
+    registry := exec.Command("/usr/bin/run_registry.sh")
+    err := registry.Start()
+    if err != nil {
+        log.Fatal(err)
+    }
+    err = registry.Wait()
+}
+
+// Run Koffer Plugin from site.yml
+func cmdPluginRun() {
+    // Run Plugin
+    cmd := exec.Command("./site.yml")
+    var stdout, stderr []byte
+    var errStdout, errStderr error
+    stdoutIn, _ := cmd.StdoutPipe()
+    stderrIn, _ := cmd.StderrPipe()
+    err := cmd.Start()
+    if err != nil {
+        log.Fatalf("cmd.Start() failed with '%s'\n", err)
+    }
+    var wg sync.WaitGroup
+    wg.Add(1)
+    go func() {
+        stdout, errStdout = copyAndCapture(os.Stdout, stdoutIn)
+        wg.Done()
+    }()
+    stderr, errStderr = copyAndCapture(os.Stderr, stderrIn)
+    wg.Wait()
+    err = cmd.Wait()
+    if err != nil {
+        log.Fatalf("cmd.Run() failed with %s\n", err)
+    }
+    if errStdout != nil || errStderr != nil {
+        log.Fatal("failed to capture stdout \n")
+    }
+    errStr := string(stderr)
+    if stderr != nil {
+        fmt.Printf("\nerr:\n%s\n", errStr)
+    }
+}
+
