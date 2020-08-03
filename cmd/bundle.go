@@ -39,7 +39,7 @@ var (
     user string
     branch string
     dir string
-    repo []string
+    repos []string
 )
 //var repo arrayFlags
 //type arrayFlags []string
@@ -70,7 +70,7 @@ func init() {
 	bundleCmd.Flags().StringVarP(&user, "user", "u", "CodeSparta", "Repo {User,Organization}/path")
         bundleCmd.Flags().StringVarP(&branch, "branch", "b", "master", "Git Branch")
         bundleCmd.Flags().StringVarP(&dir, "dir", "d", "/root/koffer", "Clone Path")
-        bundleCmd.Flags().StringArrayVarP(&repo, "repo", "r", []string{}, "Plugin Repo Name")
+        bundleCmd.Flags().StringArrayVarP(&repos, "repo", "r", []string{}, "Plugin Repo Name")
 }
 
 func core() {
@@ -80,15 +80,20 @@ func core() {
     kpullsecret.PromptReqQuay()
     kpullsecret.WriteConfig()
 
-    // build url from vars
-    gitslice := []string{ "https://", service, "/", user, "/", repo }
-    url := strings.Join(gitslice, "")
+    // Start Internal Registry Service
+    cmdRegistryStart()
 
-    // set branch
-    branchslice := []string{ "refs/heads/", branch }
-    branch := strings.Join(branchslice, "")
+        for _, repo := range repo {
+            kofferLoop(repo)
+            // build url from vars
+            gitslice := []string{ "https://", service, "/", user, "/", repo }
+            url := strings.Join(gitslice, "")
 
-    runvars := "\n" +
+            // set branch
+            branchslice := []string{ "refs/heads/", branch }
+            branch := strings.Join(branchslice, "")
+
+            runvars := "\n" +
                "    Service: " + service + "\n" +
                "  User/Path: " + user + "\n" +
                "       Repo: " + repo + "\n" +
@@ -96,16 +101,11 @@ func core() {
                "       Dest: " + dir + "\n" +
                "        URL: " + url + "\n" +
                "        CMD: git clone " + url + dir + "\n"
-    kcorelog.Info(runvars)
+            kcorelog.Info(runvars)
 
-    // Clone the given repository to the given directory
-    kcorelog.Info(" >>  git clone %s %s", url, dir)
+            // Clone the given repository to the given directory
+            kcorelog.Info(" >>  git clone %s %s", url, dir)
 
-    // Start Internal Registry Service
-    cmdRegistryStart()
-
-//      for _, element := range repo {
-//          kofferLoop(element)
             // purge pre-existing artifacts
             RemoveContents(dir)
 
@@ -214,11 +214,11 @@ func cmdPluginRun() {
         fmt.Printf("\nerr:\n%s\n", errStr)
     }
 }
-/*
-func kofferLoop(element string) {
-    fmt.Println(element)
+func kofferLoop(repo string) {
+    fmt.Println(repo)
 }
 
+/*
 func (i *arrayFlags) String() string {
     return "values"
 }
