@@ -99,7 +99,7 @@ func core() {
 
     // purge pre-existing artifacts
     RemoveContents(dir)
-    gitCloneRepo(*url)
+    GitCloneRepo(*url)
     cmdRegistryStart()
     cmdPluginRun()
 }
@@ -124,7 +124,7 @@ func RemoveContents(dir string) error {
 }
 
 // Git Clone Plugin Repository
-func gitCloneRepo(format string, args ...interface{}) {
+func GitCloneRepo(format string, args ...interface{}) {
 
     // Clone Git Repository
     r, err := git.PlainClone(dir, false, &git.CloneOptions{
