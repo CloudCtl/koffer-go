@@ -36,7 +36,6 @@ import (
 
 var service string
 var user string
-var repo string
 var branch string
 var dir string
 var repo arrayFlags
