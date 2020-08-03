@@ -45,10 +45,10 @@ func main() {
                "      Path: " + *pathClone + "\n" +
                "       URL: " + url + "\n" +
                "       CMD: git clone " + url + *pathClone + "\n"
-    Info(runvars)
+    status.Info(runvars)
 
     // Clone the given repository to the given directory
-    Info("git clone %s %s", url, *pathClone)
+    status.Info("git clone %s %s", url, *pathClone)
 
     r, err := git.PlainClone(*pathClone, false, &git.CloneOptions{
         URL:               url,
@@ -57,14 +57,14 @@ func main() {
 	SingleBranch:      true,
 	Tags:              git.NoTags,
     })
-    CheckIfError(err)
+    sanity.CheckIfError(err)
     // ... retrieving the branch being pointed by HEAD
     ref, err := r.Head()
-    CheckIfError(err)
+    sanity.CheckIfError(err)
 
     // ... retrieving the commit object
     commit, err := r.CommitObject(ref.Hash())
-    CheckIfError(err)
+    sanity.CheckIfError(err)
 
     fmt.Println(commit)
 
@@ -89,11 +89,11 @@ func main() {
     var wg sync.WaitGroup
     wg.Add(1)
     go func() {
-        stdout, errStdout = copyAndCapture(os.Stdout, stdoutIn)
+        stdout, errStdout = status.copyAndCapture(os.Stdout, stdoutIn)
         wg.Done()
     }()
 
-    stderr, errStderr = copyAndCapture(os.Stderr, stderrIn)
+    stderr, errStderr = status.copyAndCapture(os.Stderr, stderrIn)
 
     wg.Wait()
 
@@ -112,33 +112,3 @@ func main() {
         fmt.Printf("\nerr:\n%s\n", errStr)
     }
 }
-
-
-/*
-  Functions
-*/
-
-// CheckArgs should be used to ensure the right command line arguments are
-// passed before executing an example.
-func CheckArgs(arg ...string) {
-	if len(os.Args) < len(arg)+1 {
-		Warning("Usage: %s %s", os.Args[0], strings.Join(arg, " "))
-		os.Exit(1)
-	}
-}
-
-// CheckIfError should be used to naively panics if an error is not nil.
-func CheckIfError(err error) {
-	if err == nil {
-		return
-	}
-
-	fmt.Printf("\x1b[31;1m%s\x1b[0m\n", fmt.Sprintf("error: %s", err))
-	os.Exit(1)
-}
-
-// Info should be used to describe the example commands that are about to run.
-func Info(format string, args ...interface{}) {
-	fmt.Printf("\x1b[34;1m%s\x1b[0m\n", fmt.Sprintf(format, args...))
-}
-
