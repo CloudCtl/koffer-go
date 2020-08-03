@@ -38,7 +38,7 @@ var service string
 var user string
 var branch string
 var dir string
-var repo []string
+var repo string
 //var repo arrayFlags
 //type arrayFlags []string
 
