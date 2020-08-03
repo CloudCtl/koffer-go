@@ -49,5 +49,5 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// mirrorCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	mirrorCmd.Flags().BoolP("help", "h", true, "koffer mirror help")
 }
