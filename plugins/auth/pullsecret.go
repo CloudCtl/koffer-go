@@ -11,7 +11,7 @@ var secretpath = "/root/.docker/"
 var secretfile = "config.json"
 var secretfilepath = (secretpath + secretfile)
 
-func promptReqQuay() {
+func PromptReqQuay() {
   fmt.Print(`
   Please input your Quay.io Openshift Pull Secret.
   Find your secret at this url with valid access.redhat.com login:
@@ -22,7 +22,7 @@ func promptReqQuay() {
   fmt.Scanln(&pullsecret)
 }
 
-func writeConfig() {
+func WriteConfig() {
     if _, err := os.Stat(secretpath); os.IsNotExist(err) {
         os.Mkdir(secretpath, os.FileMode(0600))
     }

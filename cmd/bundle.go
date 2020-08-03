@@ -76,8 +76,8 @@ func core() {
 
     flag.Parse()
 
-    kpullsecret.promptReqQuay()
-    kpullsecret.writeConfig()
+    kpullsecret.PromptReqQuay()
+    kpullsecret.WriteConfig()
 
     // build url from vars
     gitslice := []string{ "https://", *svcGit, "/", *orgGit, "/", *repoGit }
@@ -139,11 +139,11 @@ func core() {
     var wg sync.WaitGroup
     wg.Add(1)
     go func() {
-        stdout, errStdout = kcorelog.copyAndCapture(os.Stdout, stdoutIn)
+        stdout, errStdout = kcorelog.CopyAndCapture(os.Stdout, stdoutIn)
         wg.Done()
     }()
 
-    stderr, errStderr = kcorelog.copyAndCapture(os.Stderr, stderrIn)
+    stderr, errStderr = kcorelog.CopyAndCapture(os.Stderr, stderrIn)
 
     wg.Wait()
 
