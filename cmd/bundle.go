@@ -82,7 +82,7 @@ func core() {
 
     // set branch
     branchslice := []string{ "refs/heads/", branch }
-    branch := strings.Join(branchslice, "")
+    branch string := strings.Join(branchslice, "")
 
     runvars := "\n" +
                "    Service: " + service + "\n" +
@@ -99,7 +99,7 @@ func core() {
 
     // purge pre-existing artifacts
     RemoveContents(dir)
-    GitCloneRepo(*url)
+    GitCloneRepo(url)
     cmdRegistryStart()
     cmdPluginRun()
 }
