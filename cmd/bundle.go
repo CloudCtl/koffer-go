@@ -78,7 +78,7 @@ func core() {
 
     // build url from vars
     gitslice := []string{ "https://", service, "/", user, "/", repo }
-    url = strings.Join(gitslice, "")
+    url := strings.Join(gitslice, "")
 
     // set branch
     branchslice := []string{ "refs/heads/", branch }
