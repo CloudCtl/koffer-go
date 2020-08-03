@@ -6,6 +6,11 @@ import (
 	"io/ioutil"
 )
 
+var pullsecret []byte
+var secretpath = "/root/.docker/"
+var secretfile = "config.json"
+var secretfilepath = (secretpath + secretfile)
+
 func promptReqQuay() {
   fmt.Print(`
   Please input your Quay.io Openshift Pull Secret.

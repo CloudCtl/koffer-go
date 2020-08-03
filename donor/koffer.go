@@ -15,11 +15,6 @@ import (
 //  "github.com/codesparta/koffer/entrypoint/src"
 )
 
-var pullsecret []byte
-var secretpath = "/root/.docker/"
-var secretfile = "config.json"
-var secretfilepath = (secretpath + secretfile)
-
 // Basic example of how to clone a repository using clone options.
 func main() {
 
