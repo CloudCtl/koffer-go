@@ -99,7 +99,7 @@ func core() {
 
     // purge pre-existing artifacts
     RemoveContents(dir)
-    GitCloneRepo()
+    GitCloneRepo(url)
     cmdRegistryStart()
     cmdPluginRun()
 }
