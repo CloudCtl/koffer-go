@@ -212,5 +212,5 @@ func cmdPluginRun() {
     }
 }
 func kofferLoop(repo string) {
-    fmt.Println( >> Running Plugin: repo)
+    fmt.Println(" >>  Running Plugin: ", repo)
 }
