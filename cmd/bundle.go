@@ -38,8 +38,9 @@ var service string
 var user string
 var branch string
 var dir string
-var repo arrayFlags
-type arrayFlags []string
+//var repo string
+//var repo arrayFlags
+//type arrayFlags []string
 
 // bundleCmd represents the bundle command
 var bundleCmd = &cobra.Command{
@@ -65,7 +66,7 @@ func init() {
 	bundleCmd.Flags().BoolP("help", "h", false, "koffer bundle help")
 	bundleCmd.Flags().StringVarP(&service, "service", "s", "github.com", "Git Server")
 	bundleCmd.Flags().StringVarP(&user, "user", "u", "CodeSparta", "Repo {User,Organization}/path")
-        bundleCmd.Flags().StringArrayVarP(&repo, "repo", "r", "collector-infra", "Plugin Repo Name")
+        bundleCmd.Flags().StringArrayP(repo, "repo", "r", "collector-infra", "Plugin Repo Name")
         bundleCmd.Flags().StringVarP(&branch, "branch", "b", "master", "Git Branch")
         bundleCmd.Flags().StringVarP(&dir, "dir", "d", "/root/koffer", "Clone Path")
 }
@@ -101,7 +102,7 @@ func core() {
     // Start Internal Registry Service
     cmdRegistryStart()
 
-        for _, element := range repo {
+//      for _, element := range repo {
             kofferLoop(element)
             // purge pre-existing artifacts
             RemoveContents(dir)
@@ -125,7 +126,7 @@ func core() {
 
             // Run Koffer Plugin
             cmdPluginRun()
-        }
+//      }
 }
 
 func RemoveContents(dir string) error {
