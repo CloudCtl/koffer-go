@@ -1,7 +1,9 @@
 package kstatus
 
 import (
-	"io"
+    "io"
+
+    "github.com/CodeSparta/koffer-go/plugins/log"
 )
 
 func copyAndCapture(w io.Writer, r io.Reader) ([]byte, error) {
