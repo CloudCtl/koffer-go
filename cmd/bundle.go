@@ -31,7 +31,6 @@ import (
     "github.com/CodeSparta/koffer-go/plugins/auth"
     "github.com/CodeSparta/koffer-go/plugins/err"
     "github.com/CodeSparta/koffer-go/plugins/log"
-    "github.com/CodeSparta/koffer-go/plugins/status"
 //  "github.com/codesparta/koffer/entrypoint/src"
 )
 
@@ -141,11 +140,11 @@ func core() {
     var wg sync.WaitGroup
     wg.Add(1)
     go func() {
-        stdout, errStdout = status.copyAndCapture(os.Stdout, stdoutIn)
+        stdout, errStdout = kcorelog.copyAndCapture(os.Stdout, stdoutIn)
         wg.Done()
     }()
 
-    stderr, errStderr = status.copyAndCapture(os.Stderr, stderrIn)
+    stderr, errStderr = kcorelog.copyAndCapture(os.Stderr, stderrIn)
 
     wg.Wait()
 
