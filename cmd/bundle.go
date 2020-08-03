@@ -99,8 +99,27 @@ func core() {
 
     // purge pre-existing artifacts
     RemoveContents(dir)
-    GitCloneRepo(url)
+
+    // Clone Git Repository
+    // GitCloneRepo(url)
+    r, err := git.PlainClone(dir, false, &git.CloneOptions{
+        URL:               url,
+        RecurseSubmodules: git.DefaultSubmoduleRecursionDepth,
+	ReferenceName:     plumbing.ReferenceName(branch),
+	SingleBranch:      true,
+	Tags:              git.NoTags,
+    })
+    ksanity.CheckIfError(err)
+    ref, err := r.Head()
+    ksanity.CheckIfError(err)
+    commit, err := r.CommitObject(ref.Hash())
+    ksanity.CheckIfError(err)
+    fmt.Println(commit)
+
+    // Start Internal Registry Service
     cmdRegistryStart()
+
+    // Run Koffer Plugin
     cmdPluginRun()
 }
 
@@ -124,6 +143,7 @@ func RemoveContents(dir string) error {
 }
 
 // Git Clone Plugin Repository
+/*
 func GitCloneRepo(format string, args ...interface{}) {
 
     // Clone Git Repository
@@ -142,6 +162,7 @@ func GitCloneRepo(format string, args ...interface{}) {
     // Print Latest Commit Info
     fmt.Println(commit)
 }
+*/
 
 func cmdRegistryStart() {
     // Start Internal Registry Service 
