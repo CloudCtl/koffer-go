@@ -20,7 +20,6 @@ plugins="
     "github.com/CodeSparta/koffer-go/plugins/err" \
     "github.com/CodeSparta/koffer-go/plugins/log" \
     "github.com/CodeSparta/koffer-go/plugins/auth" \
-    "github.com/CodeSparta/koffer-go/plugins/status" \
 "
 for i in ${plugins}; do
   ${goCmd} get -u ${i};
