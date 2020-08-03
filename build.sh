@@ -15,6 +15,8 @@ mkdir -p /tmp/bin
 
 plugins="
     "github.com/spf13/cobra" \
+    "golang.org/x/sys/unix" \
+    "github.com/spf13/viper" \
     "github.com/go-git/go-git" \
     "github.com/go-git/go-git/plumbing" \
     "github.com/CodeSparta/koffer-go/plugins/err" \
