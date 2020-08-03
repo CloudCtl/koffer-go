@@ -23,6 +23,7 @@ import (
     "sync"
     "os/exec"
     "strings"
+    "path/filepath"
 
     "github.com/spf13/cobra"
     "github.com/go-git/go-git"
@@ -100,6 +101,9 @@ func core() {
     // Clone the given repository to the given directory
     kcorelog.Info("git clone %s %s", url, *pathClone)
 
+    // purge pre-existing artifacts
+    RemoveContents(*pathClone)
+
     r, err := git.PlainClone(*pathClone, false, &git.CloneOptions{
         URL:               url,
         RecurseSubmodules: git.DefaultSubmoduleRecursionDepth,
@@ -161,4 +165,23 @@ func core() {
     if stderr != nil {
         fmt.Printf("\nerr:\n%s\n", errStr)
     }
+}
+
+func RemoveContents(dir string) error {
+    d, err := os.Open(dir)
+    if err != nil {
+        return err
+    }
+    defer d.Close()
+    names, err := d.Readdirnames(-1)
+    if err != nil {
+        return err
+    }
+    for _, name := range names {
+        err = os.RemoveAll(filepath.Join(dir, name))
+        if err != nil {
+            return err
+        }
+    }
+    return nil
 }
