@@ -39,7 +39,7 @@ var user string
 var repo string
 var branch string
 var dir string
-var myFlags arrayFlags
+var repo arrayFlags
 type arrayFlags []string
 
 // bundleCmd represents the bundle command
@@ -74,9 +74,6 @@ func init() {
 func core() {
 
     flag.Parse()
-    for _, element := range myFlags {
-        kofferLoop(element)
-    }
 
     kpullsecret.PromptReqQuay()
     kpullsecret.WriteConfig()
@@ -102,30 +99,34 @@ func core() {
     // Clone the given repository to the given directory
     kcorelog.Info(" >>  git clone %s %s", url, dir)
 
-    // purge pre-existing artifacts
-    RemoveContents(dir)
-
-    // Clone Git Repository
-    // GitCloneRepo(url)
-    r, err := git.PlainClone(dir, false, &git.CloneOptions{
-        URL:               url,
-        RecurseSubmodules: git.DefaultSubmoduleRecursionDepth,
-	ReferenceName:     plumbing.ReferenceName(branch),
-	SingleBranch:      true,
-	Tags:              git.NoTags,
-    })
-    ksanity.CheckIfError(err)
-    ref, err := r.Head()
-    ksanity.CheckIfError(err)
-    commit, err := r.CommitObject(ref.Hash())
-    ksanity.CheckIfError(err)
-    fmt.Println(commit)
-
     // Start Internal Registry Service
     cmdRegistryStart()
 
-    // Run Koffer Plugin
-    cmdPluginRun()
+        for _, element := range repo {
+            kofferLoop(element)
+            // purge pre-existing artifacts
+            RemoveContents(dir)
+
+            // Clone Git Repository
+            // GitCloneRepo(url)
+            r, err := git.PlainClone(dir, false, &git.CloneOptions{
+                URL:               url,
+                RecurseSubmodules: git.DefaultSubmoduleRecursionDepth,
+                ReferenceName:     plumbing.ReferenceName(branch),
+                SingleBranch:      true,
+                Tags:              git.NoTags,
+            })
+
+            ksanity.CheckIfError(err)
+            ref, err := r.Head()
+            ksanity.CheckIfError(err)
+            commit, err := r.CommitObject(ref.Hash())
+            ksanity.CheckIfError(err)
+            fmt.Println(commit)
+
+            // Run Koffer Plugin
+            cmdPluginRun()
+        }
 }
 
 func RemoveContents(dir string) error {
