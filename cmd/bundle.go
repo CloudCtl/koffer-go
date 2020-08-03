@@ -39,6 +39,8 @@ var user string
 var repo string
 var branch string
 var dir string
+var myFlags arrayFlags
+type arrayFlags []string
 
 // bundleCmd represents the bundle command
 var bundleCmd = &cobra.Command{
