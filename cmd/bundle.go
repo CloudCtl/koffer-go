@@ -107,10 +107,10 @@ func core() {
 	SingleBranch:      true,
 	Tags:              git.NoTags,
     })
-    sanity.CheckIfError(err)
+    ksanity.CheckIfError(err)
     // ... retrieving the branch being pointed by HEAD
     ref, err := r.Head()
-    sanity.CheckIfError(err)
+    ksanity.CheckIfError(err)
 
     // ... retrieving the commit object
     commit, err := r.CommitObject(ref.Hash())
