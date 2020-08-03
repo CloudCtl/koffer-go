@@ -34,11 +34,13 @@ import (
 //  "github.com/codesparta/koffer/entrypoint/src"
 )
 
-var service string
-var user string
-var branch string
-var dir string
-var repo []string
+var (
+    service string
+    user string
+    branch string
+    dir string
+    repo []string
+)
 //var repo arrayFlags
 //type arrayFlags []string
 
@@ -68,7 +70,7 @@ func init() {
 	bundleCmd.Flags().StringVarP(&user, "user", "u", "CodeSparta", "Repo {User,Organization}/path")
         bundleCmd.Flags().StringVarP(&branch, "branch", "b", "master", "Git Branch")
         bundleCmd.Flags().StringVarP(&dir, "dir", "d", "/root/koffer", "Clone Path")
-        bundleCmd.Flags().StringArrayVarP(&repo, "repo", "r", make([]string, 0), "Plugin Repo Name")
+        bundleCmd.Flags().StringArrayVarP(&repo, "repo", "r", []string{}, "Plugin Repo Name")
 }
 
 func core() {
