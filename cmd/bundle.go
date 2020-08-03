@@ -27,9 +27,9 @@ import (
     "github.com/spf13/cobra"
     "github.com/go-git/go-git"
     "github.com/go-git/go-git/plumbing"
-    kauth "github.com/CodeSparta/koffer-go/plugins/auth"
+    kpullsecret "github.com/CodeSparta/koffer-go/plugins/auth"
+    kcorelog "github.com/CodeSparta/koffer-go/plugins/log"
     "github.com/CodeSparta/koffer-go/plugins/err"
-    "github.com/CodeSparta/koffer-go/plugins/log"
 //  "github.com/codesparta/koffer/entrypoint/src"
 )
 
@@ -76,8 +76,8 @@ func core() {
 
     flag.Parse()
 
-    kauth.promptReqQuay()
-    kauth.writeConfig()
+    kpullsecret.promptReqQuay()
+    kpullsecret.writeConfig()
 
     // build url from vars
     gitslice := []string{ "https://", *svcGit, "/", *orgGit, "/", *repoGit }
