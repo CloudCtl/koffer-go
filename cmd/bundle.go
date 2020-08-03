@@ -38,7 +38,7 @@ var service string
 var user string
 var branch string
 var dir string
-var repo string
+var repo []string
 //var repo arrayFlags
 //type arrayFlags []string
 
@@ -69,6 +69,7 @@ func init() {
         bundleCmd.Flags().StringVarP(&branch, "branch", "b", "master", "Git Branch")
         bundleCmd.Flags().StringVarP(&dir, "dir", "d", "/root/koffer", "Clone Path")
         bundleCmd.Flags().StringArrayVarP(&repo, "repo", "r", []string{}, "Plugin Repo Name")
+	return
 }
 
 func core() {
