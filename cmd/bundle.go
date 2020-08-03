@@ -83,7 +83,7 @@ func core() {
     // Start Internal Registry Service
     cmdRegistryStart()
 
-        for _, repo := range repo {
+        for _, repo := range repos {
             kofferLoop(repo)
             // build url from vars
             gitslice := []string{ "https://", service, "/", user, "/", repo }
