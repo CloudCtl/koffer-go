@@ -30,7 +30,7 @@ import (
     "github.com/go-git/go-git/plumbing"
     kpullsecret "github.com/CodeSparta/koffer-go/plugins/auth"
     kcorelog "github.com/CodeSparta/koffer-go/plugins/log"
-//  "github.com/CodeSparta/koffer-go/plugins/err"
+    "github.com/CodeSparta/koffer-go/plugins/err"
 //  "github.com/codesparta/koffer/entrypoint/src"
 )
 
@@ -134,11 +134,11 @@ func gitCloneRepo(format string, args ...interface{}) {
 	SingleBranch:      true,
 	Tags:              git.NoTags,
     })
-    CheckIfError(err)
+    ksanity.CheckIfError(err)
     ref, err := r.Head()
-    CheckIfError(err)
+    ksanity.CheckIfError(err)
     commit, err := r.CommitObject(ref.Hash())
-    CheckIfError(err)
+    ksanity.CheckIfError(err)
     // Print Latest Commit Info
     fmt.Println(commit)
 }
@@ -168,10 +168,10 @@ func cmdPluginRun() {
     var wg sync.WaitGroup
     wg.Add(1)
     go func() {
-        stdout, errStdout = copyAndCapture(os.Stdout, stdoutIn)
+        stdout, errStdout = kcorelog.CopyAndCapture(os.Stdout, stdoutIn)
         wg.Done()
     }()
-    stderr, errStderr = copyAndCapture(os.Stderr, stderrIn)
+    stderr, errStderr = kcorelog.CopyAndCapture(os.Stderr, stderrIn)
     wg.Wait()
     err = cmd.Wait()
     if err != nil {
