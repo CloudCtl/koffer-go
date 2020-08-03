@@ -1,4 +1,4 @@
-package corelog
+package kcorelog
 
 import (
 	"fmt"

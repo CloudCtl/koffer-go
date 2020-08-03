@@ -14,6 +14,7 @@ mkdir -p /tmp/bin
 git stage -A; git commit -m "$@"; git push origin
 ${goCmd} get -u github.com/CodeSparta/koffer-go
 ${goCmd} get -u github.com/CodeSparta/koffer-go/cmd
+${goCmd} get -u github.com/CodeSparta/koffer-go/plugins
 ${goCmd} build
 
 mv ./dev koffer 2>/dev/null

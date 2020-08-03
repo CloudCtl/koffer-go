@@ -1,4 +1,4 @@
-package sanity
+package ksanity
 
 import (
 	"os"

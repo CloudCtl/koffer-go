@@ -1,4 +1,4 @@
-package pullsecret
+package kpullsecret
 
 import (
 	"fmt"
