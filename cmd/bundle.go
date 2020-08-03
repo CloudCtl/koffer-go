@@ -34,6 +34,12 @@ import (
 //  "github.com/codesparta/koffer/entrypoint/src"
 )
 
+var service string
+var user string
+var repo string
+var branch string
+var dir string
+
 // bundleCmd represents the bundle command
 var bundleCmd = &cobra.Command{
 	Use:   "bundle",
