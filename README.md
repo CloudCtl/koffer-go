@@ -1,4 +1,4 @@
-# koffer-go
+# koffer-go container entrypoint binary
 ```
 kmorgan@mordor:~$ podman run -it --rm docker.io/codesparta/koffer bundle -h
 Koffer Engine Bundle:
