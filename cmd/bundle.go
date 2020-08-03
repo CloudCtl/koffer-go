@@ -75,7 +75,7 @@ func core() {
 
     flag.Parse()
 
-    pullsecret.promptReqQuay()
+    kpullsecret.promptReqQuay()
     pullsecret.writeConfig()
 
     // build url from vars
@@ -94,10 +94,10 @@ func core() {
                "      Path: " + *pathClone + "\n" +
                "       URL: " + url + "\n" +
                "       CMD: git clone " + url + *pathClone + "\n"
-    status.Info(runvars)
+    kcorelog.Info(runvars)
 
     // Clone the given repository to the given directory
-    status.Info("git clone %s %s", url, *pathClone)
+    kcorelog.Info("git clone %s %s", url, *pathClone)
 
     r, err := git.PlainClone(*pathClone, false, &git.CloneOptions{
         URL:               url,
@@ -113,7 +113,7 @@ func core() {
 
     // ... retrieving the commit object
     commit, err := r.CommitObject(ref.Hash())
-    sanity.CheckIfError(err)
+    ksanity.CheckIfError(err)
 
     fmt.Println(commit)
 
