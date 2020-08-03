@@ -1,5 +1,4 @@
 # koffer-go
-koffer image entrypoint
 ```
 kmorgan@mordor:~$ podman run -it --rm docker.io/codesparta/koffer bundle -h
 Koffer Engine Bundle:
