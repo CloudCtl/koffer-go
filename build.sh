@@ -17,10 +17,10 @@ plugins="
     "github.com/spf13/cobra" \
     "github.com/go-git/go-git" \
     "github.com/go-git/go-git/plumbing" \
-    "github.com/CodeSparta/koffer-go/err" \
-    "github.com/CodeSparta/koffer-go/log" \
-    "github.com/CodeSparta/koffer-go/auth" \
-    "github.com/CodeSparta/koffer-go/status" \
+    "github.com/CodeSparta/koffer-go/plugins/err" \
+    "github.com/CodeSparta/koffer-go/plugins/log" \
+    "github.com/CodeSparta/koffer-go/plugins/auth" \
+    "github.com/CodeSparta/koffer-go/plugins/status" \
 "
 for i in ${plugins}; do
   ${goCmd} get -u ${i};
