@@ -41,10 +41,7 @@ var (
     dir string
     repos []string
 )
-//var repo arrayFlags
-//type arrayFlags []string
 
-// bundleCmd represents the bundle command
 var bundleCmd = &cobra.Command{
 	Use:   "bundle",
 	Short: "Koffer Engine Bundle Utility",
@@ -215,16 +212,5 @@ func cmdPluginRun() {
     }
 }
 func kofferLoop(repo string) {
-    fmt.Println(repo)
+    fmt.Println( >> Running Plugin: repo)
 }
-
-/*
-func (i *arrayFlags) String() string {
-    return "values"
-}
-
-func (i *arrayFlags) Set(value string) error {
-    *i = append(*i, value)
-    return nil
-}
-*/
