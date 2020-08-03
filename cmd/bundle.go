@@ -128,7 +128,7 @@ func core() {
 
             // Run Koffer Plugin
             cmdPluginRun()
-//      }
+        }
 }
 
 func RemoveContents(dir string) error {
