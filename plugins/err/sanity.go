@@ -4,13 +4,15 @@ import (
 	"os"
 	"fmt"
 	"strings"
+
+	"github.com/CodeSparta/koffer-go/plugins/log"
 )
 
 
 // CheckArgs should be used to sanity check cmd line arguments
 func CheckArgs(arg ...string) {
 	if len(os.Args) < len(arg)+1 {
-		Warning("Usage: %s %s", os.Args[0], strings.Join(arg, " "))
+		kcorelog.Warning("Usage: %s %s", os.Args[0], strings.Join(arg, " "))
 		os.Exit(1)
 	}
 }
