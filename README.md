@@ -1,6 +1,6 @@
 # koffer-go container entrypoint binary
 ```
-kmorgan@mordor:~$ podman run -it --rm docker.io/codesparta/koffer bundle -h
+root@mordor:~$ podman run -it --rm docker.io/codesparta/koffer bundle -h
 Koffer Engine Bundle:
   Bundle is intended to run against koffer collector plugin
   repos to build artifact bundles capable of transporting all
