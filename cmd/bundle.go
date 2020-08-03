@@ -78,11 +78,11 @@ func core() {
 
     // build url from vars
     gitslice := []string{ "https://", service, "/", user, "/", repo }
-    url := strings.Join(gitslice, "")
+    url string := strings.Join(gitslice, "")
 
     // set branch
     branchslice := []string{ "refs/heads/", branch }
-    branch string := strings.Join(branchslice, "")
+    branch := strings.Join(branchslice, "")
 
     runvars := "\n" +
                "    Service: " + service + "\n" +
@@ -99,7 +99,7 @@ func core() {
 
     // purge pre-existing artifacts
     RemoveContents(dir)
-    GitCloneRepo(url)
+    GitCloneRepo(url string)
     cmdRegistryStart()
     cmdPluginRun()
 }
