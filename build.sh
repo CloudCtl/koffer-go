@@ -12,9 +12,20 @@ rm -rf /root/koffer 2>/dev/null
 mkdir -p /tmp/bin
 
 git stage -A; git commit -m "$@"; git push origin
-${goCmd} get -u github.com/CodeSparta/koffer-go
-${goCmd} get -u github.com/CodeSparta/koffer-go/cmd
-${goCmd} get -u github.com/CodeSparta/koffer-go/plugins
+
+plugins="
+    "github.com/spf13/cobra" \
+    "github.com/go-git/go-git" \
+    "github.com/go-git/go-git/plumbing" \
+    "github.com/CodeSparta/koffer-go/err" \
+    "github.com/CodeSparta/koffer-go/log" \
+    "github.com/CodeSparta/koffer-go/auth" \
+    "github.com/CodeSparta/koffer-go/status" \
+"
+for i in ${plugins}; do
+  ${goCmd} get -u ${i};
+done
+
 ${goCmd} build
 
 mv ./dev koffer 2>/dev/null
