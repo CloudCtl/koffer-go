@@ -103,7 +103,7 @@ func core() {
     cmdRegistryStart()
 
 //      for _, element := range repo {
-            kofferLoop(element)
+//          kofferLoop(element)
             // purge pre-existing artifacts
             RemoveContents(dir)
 
@@ -212,7 +212,7 @@ func cmdPluginRun() {
         fmt.Printf("\nerr:\n%s\n", errStr)
     }
 }
-
+/*
 func kofferLoop(element string) {
     fmt.Println(element)
 }
@@ -225,3 +225,4 @@ func (i *arrayFlags) Set(value string) error {
     *i = append(*i, value)
     return nil
 }
+*/
