@@ -11,7 +11,7 @@ rm /bin/koffer 2>/dev/null
 rm -rf /root/koffer 2>/dev/null
 mkdir -p /tmp/bin
 
-git stage -A; git commit -m "$@"; git push origin
+git stage -A; git commit -m 'testing'; git push origin master
 
 plugins="
     "github.com/spf13/cobra" \
