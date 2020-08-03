@@ -66,7 +66,7 @@ func init() {
 	bundleCmd.Flags().BoolP("help", "h", false, "koffer bundle help")
 	bundleCmd.Flags().StringVarP(&service, "service", "s", "github.com", "Git Server")
 	bundleCmd.Flags().StringVarP(&user, "user", "u", "CodeSparta", "Repo {User,Organization}/path")
-        bundleCmd.Flags().StringArrayP(repo, "repo", "r", "collector-infra", "Plugin Repo Name")
+        bundleCmd.Flags().StringArrayP("repo", "r", "collector-infra", "Plugin Repo Name")
         bundleCmd.Flags().StringVarP(&branch, "branch", "b", "master", "Git Branch")
         bundleCmd.Flags().StringVarP(&dir, "dir", "d", "/root/koffer", "Clone Path")
 }
