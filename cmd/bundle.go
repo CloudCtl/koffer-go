@@ -72,6 +72,9 @@ func init() {
 func core() {
 
     flag.Parse()
+    for _, element := range myFlags {
+        kofferLoop(element)
+    }
 
     kpullsecret.PromptReqQuay()
     kpullsecret.WriteConfig()
@@ -207,3 +210,15 @@ func cmdPluginRun() {
     }
 }
 
+func kofferLoop(element string) {
+    fmt.Println(element)
+}
+
+func (i *arrayFlags) String() string {
+    return "values"
+}
+
+func (i *arrayFlags) Set(value string) error {
+    *i = append(*i, value)
+    return nil
+}
