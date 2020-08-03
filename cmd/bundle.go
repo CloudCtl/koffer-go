@@ -68,7 +68,7 @@ func init() {
 	bundleCmd.Flags().StringVarP(&user, "user", "u", "CodeSparta", "Repo {User,Organization}/path")
         bundleCmd.Flags().StringVarP(&branch, "branch", "b", "master", "Git Branch")
         bundleCmd.Flags().StringVarP(&dir, "dir", "d", "/root/koffer", "Clone Path")
-        bundleCmd.Flags().StringArrayVarP(&repo, "repo", "r", make([]string, 0), "Plugin Repo Name")
+        bundleCmd.Flags().StringArrayVarP(&repo, "repo", "r", []string{}, "Plugin Repo Name")
 }
 
 func core() {
