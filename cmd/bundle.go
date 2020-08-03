@@ -17,7 +17,6 @@ package cmd
 
 import (
     "os"
-    "io"
     "log"
     "fmt"
     "flag"
