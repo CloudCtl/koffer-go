@@ -29,8 +29,7 @@ done
 
 ${goCmd} build
 
-mv ./dev koffer 2>/dev/null
-cp -f koffer /usr/bin/koffer 2>/dev/null
-cp -f koffer /tmp/bin 2>/dev/null
-mv -f koffer /tmp/bin/koffer 2>/dev/null
+mv ./dev ./bin/koffer 2>/dev/null
+cp -f ./bin/koffer /usr/bin/koffer 2>/dev/null
+cp -f ./bin/koffer /tmp/bin/koffer 2>/dev/null
 
