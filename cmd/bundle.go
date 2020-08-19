@@ -56,7 +56,6 @@ Koffer Engine Bundle:
   engine and artifacts served via the CloudCtl delivery pod.
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Running Koffer Bundle....")
 		core()
 	},
 }
@@ -76,17 +75,20 @@ func core() {
 
 	flag.Parse()
 
+	// first check configuration here so the error message can be dropped before startup messages
+	if !ask && !kpullsecret.ConfigFileExists() {
+		kcorelog.Error("Provided `--ask false` but `/root/.docker/config.json` does not exist")
+		// exit after explaining usage
+		os.Exit(1)
+	}
+
+	fmt.Println("Running Koffer Bundle....")
+
 	// this is only skipped if the user explicitly uses `--ask false`
 	// in which case it is expected that the pull secret is already available
 	if ask {
 		kpullsecret.PromptReqQuay()
 		kpullsecret.WriteConfig()
-	} else {
-		err := kpullsecret.CheckConfig()
-		if err != nil {
-			kcorelog.Error("Exiting: %s", err)
-			os.Exit(1)
-		}
 	}
 
 	// Start Internal Registry Service

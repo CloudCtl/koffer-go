@@ -45,10 +45,10 @@ func WriteConfig() {
 	fmt.Println("Created: /root/.docker/config.json")
 }
 
-func CheckConfig() error {
+func ConfigFileExists() bool {
 	var _, err = os.Stat(secretfilepath)
 	if os.IsNotExist(err) {
-		return fmt.Errorf("could not find pull secret at %s", secretfilepath)
+		return false
 	}
-	return nil
+	return true
 }
