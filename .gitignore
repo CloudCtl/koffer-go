@@ -1,2 +1,5 @@
 # ignore ide files
 .idea
+
+# ignore build output
+bin/koffer
