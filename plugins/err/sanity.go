@@ -1,13 +1,12 @@
 package ksanity
 
 import (
-	"os"
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/CodeSparta/koffer-go/plugins/log"
 )
-
 
 // CheckArgs should be used to sanity check cmd line arguments
 func CheckArgs(arg ...string) {
