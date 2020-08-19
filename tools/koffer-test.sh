@@ -1,7 +1,7 @@
 #!/bin/bash
 # allows testing koffer runs against plugins with the pre-built binary
 # Example:
-# - $ ./tools/koffer-test.sh --repo collector-apps --branch master
+# - $ ./tools/koffer-test.sh --repo collector-infra --branch master --silent
 
 # Ensure artifact dir is present
 mkdir -p /tmp/bundle ; \
