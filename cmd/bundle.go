@@ -35,7 +35,7 @@ import (
 )
 
 var (
-	ask     bool
+	silent  *bool
 	service string
 	user    string
 	branch  string
@@ -68,7 +68,7 @@ func init() {
 	bundleCmd.Flags().StringVarP(&branch, "branch", "b", "master", "Git Branch")
 	bundleCmd.Flags().StringVarP(&dir, "dir", "d", "/root/koffer", "Clone Path")
 	bundleCmd.Flags().StringArrayVarP(&repos, "repo", "r", []string{}, "Plugin Repo Name")
-	bundleCmd.Flags().BoolP("ask", "a", true, "Ask for pull secret, if false uses existing value in /root/.docker/config.json")
+	silent = bundleCmd.Flags().BoolP("silent", "a", false, "Ask for pull secret, if true uses existing value in /root/.docker/config.json")
 }
 
 func core() {
@@ -76,17 +76,17 @@ func core() {
 	flag.Parse()
 
 	// first check configuration here so the error message can be dropped before startup messages
-	if !ask && !kpullsecret.ConfigFileExists() {
-		kcorelog.Error("Provided `--ask false` but `/root/.docker/config.json` does not exist")
+	if *silent && !kpullsecret.ConfigFileExists() {
+		kcorelog.Error("Provided `--silent` but `/root/.docker/config.json` does not exist")
 		// exit after explaining usage
 		os.Exit(1)
 	}
 
 	fmt.Println("Running Koffer Bundle....")
 
-	// this is only skipped if the user explicitly uses `--ask false`
+	// this is only skipped if the user explicitly uses `--silent`
 	// in which case it is expected that the pull secret is already available
-	if ask {
+	if !*silent {
 		kpullsecret.PromptReqQuay()
 		kpullsecret.WriteConfig()
 	}
