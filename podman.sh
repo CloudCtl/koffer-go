@@ -1,5 +1,5 @@
 #!/bin/bash
-sudo podman run \
+podman run --privileged \
     -it --rm --net=host \
     --volume $(pwd):/root/dev \
     --volume ~/.ssh:/root/.ssh \

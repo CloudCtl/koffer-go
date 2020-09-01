@@ -2,14 +2,17 @@ package kpullsecret
 
 import (
 	"fmt"
+	"github.com/mitchellh/go-homedir"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 )
 
+var home, _ = homedir.Dir()
 var pullsecret []byte
-var secretpath = "/root/.docker/"
+var secretpath = filepath.Join(home, ".docker")
 var secretfile = "config.json"
-var secretfilepath = (secretpath + secretfile)
+var SecretFilePath = filepath.Join(secretpath, secretfile)
 
 func PromptReqQuay() {
 	fmt.Print(`
@@ -26,9 +29,9 @@ func WriteConfig() {
 	if _, err := os.Stat(secretpath); os.IsNotExist(err) {
 		os.Mkdir(secretpath, os.FileMode(0600))
 	}
-	var _, err = os.Stat(secretfilepath)
+	var _, err = os.Stat(SecretFilePath)
 	if os.IsNotExist(err) {
-		file, err := os.Create(secretfilepath)
+		file, err := os.Create(SecretFilePath)
 		if err != nil {
 			fmt.Println(err)
 			return
@@ -36,17 +39,17 @@ func WriteConfig() {
 		defer file.Close()
 	}
 
-	err = ioutil.WriteFile("/root/.docker/config.json", pullsecret, 0600)
+	err = ioutil.WriteFile(SecretFilePath, pullsecret, 0600)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	fmt.Println("Created: /root/.docker/config.json")
+	fmt.Printf("Created: %s\n", SecretFilePath)
 }
 
 func ConfigFileExists() bool {
-	var _, err = os.Stat(secretfilepath)
+	var _, err = os.Stat(SecretFilePath)
 	if os.IsNotExist(err) {
 		return false
 	}
