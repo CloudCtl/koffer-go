@@ -1,0 +1,18 @@
+koffer:
+  silent: true
+  plugins:
+    collector-infra:
+      version: 4.5.6
+      service: github.com
+      organization: codesparta
+      branch: master
+    collector-operators:
+      version: 4.5.6
+      service: github.com
+      organization: codesparta
+      branch: master
+    collector-apps:
+      version: 4.5.6
+      service: github.com
+      organization: codesparta
+      branch: master
