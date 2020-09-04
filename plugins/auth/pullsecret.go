@@ -48,7 +48,7 @@ func WriteConfig() {
 	fmt.Printf("Created: %s\n", SecretFilePath)
 }
 
-func DockerAuthFileExists() bool {
+func ConfigFileExists() bool {
 	var _, err = os.Stat(SecretFilePath)
 	if os.IsNotExist(err) {
 		return false

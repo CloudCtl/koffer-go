@@ -6,4 +6,4 @@ podman run --privileged \
     --volume ~/.bashrc:/root/.bashrc \
     --volume ~/.gitconfig:/root/.gitconfig \
     --name koffer-go --hostname koffer-go \
-  docker.io/codesparta/red-gotools -c /usr/bin/tmux
+  docker.io/ocpredshift/red-gotools -c /usr/bin/tmux

@@ -3,8 +3,8 @@ module github.com/CodeSparta/koffer-go
 go 1.14
 
 require (
-	github.com/CodeSparta/sparta-libs v0.0.0-20200820181122-d76e192b0d02
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
+	github.com/go-git/go-git v4.7.0+incompatible
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/mitchellh/mapstructure v1.3.3 // indirect
 	github.com/pelletier/go-toml v1.8.0 // indirect

@@ -18,10 +18,9 @@ package cmd
 import (
 	"flag"
 	"fmt"
-	"github.com/CodeSparta/sparta-libs/config"
 	"github.com/mitchellh/go-homedir"
 	"gopkg.in/src-d/go-git.v4"
-	gitconfig "gopkg.in/src-d/go-git.v4/config"
+	"gopkg.in/src-d/go-git.v4/config"
 	"gopkg.in/src-d/go-git.v4/plumbing"
 	"log"
 	"os"
@@ -38,11 +37,11 @@ import (
 )
 
 var (
-	silent        bool
-	service       string
-	user          string
-	dir           string
-	plugins       []string
+	silent  bool
+	service string
+	user    string
+	dir     string
+	plugins []string
 	defaultGitRef string
 )
 
@@ -91,66 +90,25 @@ func init() {
 	bundleCmd.Flags().StringVarP(&dir, "dir", "d", kofferdir, "Clone Path")
 	bundleCmd.Flags().StringArrayVarP(&plugins, "plugin", "p", []string{}, "Name of plugin repository to use with optional @version/branch/ref.")
 	bundleCmd.Flags().StringVarP(&defaultGitRef, "version", "v", "master", "Default git tag/head/ref to use for all plugin repositories.")
-	bundleCmd.Flags().BoolVarP(&silent, "silent", "S", false, "Ask for pull secret, if true uses existing value in /root/.docker/config.json")
+	bundleCmd.Flags().BoolVarP(&silent, "silent", "a", false, "Ask for pull secret, if true uses existing value in $HOME/.docker/config.json")
 }
 
 func core() {
 
 	flag.Parse()
 
-	kofferConfig := config.Koffer{}
-	if spartaConfig != nil {
-		kofferConfig = spartaConfig.Koffer
-	}
-
 	// first check configuration here so the error message can be dropped before startup messages
-	if (silent || kofferConfig.Silent) && !kpullsecret.DockerAuthFileExists() {
-		// determine correct error
-		if silent {
-			kcorelog.Error("Provided `--silent` but `%s` does not exist", kpullsecret.SecretFilePath)
-		} else {
-			kcorelog.Error("Provided configuration `koffer.Silent` but `%s` does not exist", kpullsecret.SecretFilePath)
-		}
+	if silent && !kpullsecret.ConfigFileExists() {
+		kcorelog.Error("Provided `--silent` but `%s` does not exist", kpullsecret.SecretFilePath)
 		// exit after explaining usage
 		os.Exit(1)
-	}
-
-	// if no plugins are configured then we should bail
-	if len(plugins) < 1 && (spartaConfig == nil || len(spartaConfig.Koffer.Plugins) < 1) {
-		kcorelog.Error("No plugins provided from configuration file '%s' or with --plugin option", cfgFile)
-		os.Exit(1)
-	}
-
-	// add/overwrite plugin values from command lines
-	for _, pluginSpec := range plugins {
-		plugin := pluginSpec
-		version := defaultGitRef
-		atIndex := strings.Index(plugin, "@")
-		if atIndex >= 0 && atIndex < len(pluginSpec) {
-			plugin = pluginSpec[0:atIndex]
-			version = pluginSpec[atIndex+1:]
-		}
-		// create / override plugin version
-		if foundPlugin, found := kofferConfig.Plugins[plugin]; found {
-			// force the version which means that the branch
-			// shortcut/optimization can't be used
-			foundPlugin.Version = version
-			foundPlugin.Branch = ""
-			kofferConfig.Plugins[plugin] = foundPlugin
-		} else {
-			kofferConfig.Plugins[plugin] = config.Plugin{
-				Version:      version,
-				Service:      service,
-				Organization: user,
-			}
-		}
 	}
 
 	fmt.Println("Running Koffer Bundle....")
 
 	// this is only skipped if the user explicitly uses `--silent`
 	// in which case it is expected that the pull secret is already available
-	if !silent && !kofferConfig.Silent {
+	if !silent {
 		kpullsecret.PromptReqQuay()
 		kpullsecret.WriteConfig()
 	}
@@ -158,18 +116,26 @@ func core() {
 	// Start Internal Registry Service
 	cmdRegistryStart()
 
-	for pluginName, pluginObject := range kofferConfig.Plugins {
-		kofferLoop(pluginName)
+	for _, pluginString := range plugins {
+		plugin:= pluginString
+		gitRef := defaultGitRef
+		atIndex := strings.Index(plugin, "@")
+		if atIndex >= 0 && atIndex < len(pluginString){
+			plugin = pluginString[0:atIndex]
+			gitRef = pluginString[atIndex+1:]
+		}
+
+		kofferLoop(plugin)
 
 		// build url from vars
-		gitslice := []string{"https://", service, "/", user, "/", pluginName}
+		gitslice := []string{"https://", service, "/", user, "/", plugin}
 		url := strings.Join(gitslice, "")
 
 		runvars := "\n" +
-			"    Service: " + pluginObject.Service + "\n" +
-			"  User/Path: " + pluginObject.Organization + "\n" +
-			"     Plugin: " + pluginName + "\n" +
-			"        Ref: " + pluginObject.Version + "\n" +
+			"    Service: " + service + "\n" +
+			"  User/Path: " + user + "\n" +
+			"     Plugin: " + plugin + "\n" +
+			"        Ref: " + gitRef + "\n" +
 			"       Dest: " + dir + "\n" +
 			"        URL: " + url + "\n" +
 			"        CMD: git clone " + url + " " + dir + "\n"
@@ -182,86 +148,74 @@ func core() {
 		RemoveContents(dir)
 
 		// Clone Git Repository
-		cloneOpts := &git.CloneOptions{
+		r, err := git.PlainClone(dir, false, &git.CloneOptions{
 			URL:               url,
 			SingleBranch:      false,
 			RecurseSubmodules: git.DefaultSubmoduleRecursionDepth,
 			Tags:              git.AllTags,
-		}
-		// if we are picking a branch we can skip a lot of steps
-		if len(pluginObject.Branch) > 0 {
-			cloneOpts.SingleBranch = true
-			cloneOpts.ReferenceName = plumbing.ReferenceName(fmt.Sprintf("refs/heads/%s", pluginObject.Branch))
-		}
-		r, err := git.PlainClone(dir, false, cloneOpts)
+		})
 		if err != nil {
-			kcorelog.Error("Could not clone %s for %s", url, pluginName)
+			kcorelog.Error("Could not clone %s for %s", url, plugin)
 			continue
 		}
-
 		if r == nil {
-			kcorelog.Error("Unspecified error during git clone for %s", pluginName)
+			kcorelog.Error("Unspecified error during git clone for %s", plugin)
 			continue
 		}
 
-		// this operates on the repository after clone which is different from when the branch
-		// is given and the repository clone process itself is changed which is why this is not
-		// in an "else" with the len(pluginObject.Branch) > 0.
-		if len(pluginObject.Branch) < 1 {
-			// fetch all from remote so that tags and branches will resolve correctly
-			err = r.Fetch(&git.FetchOptions{
-				RefSpecs: []gitconfig.RefSpec{"refs/*:refs/*", "HEAD:refs/heads/HEAD"},
+		// fetch all from remote so that tags and branches will resolve correctly
+		err = r.Fetch(&git.FetchOptions{
+			RefSpecs: []config.RefSpec{"refs/*:refs/*", "HEAD:refs/heads/HEAD"},
+		})
+		if err != nil {
+			kcorelog.Warning("Error fetching remotes from %s", url)
+		}
+
+		// get working tree
+		w, err := r.Worktree()
+		if err != nil {
+			kcorelog.Error("Error getting worktree: %s", err)
+			continue
+		}
+
+		// create a list of branches to look for
+		trialBranches := []string {
+			fmt.Sprintf("refs/tags/%s", gitRef),
+			fmt.Sprintf("refs/heads/%s", gitRef),
+			gitRef,
+		}
+
+		found := false
+		for _, ref := range trialBranches {
+			// on error try and check out revision directly
+			err = w.Checkout(&git.CheckoutOptions{
+				Branch: plumbing.ReferenceName(ref),
 			})
 			if err != nil {
-				kcorelog.Warning("Error fetching remotes from %s", url)
-			}
-
-			// get working tree
-			w, err := r.Worktree()
-			if err != nil {
-				kcorelog.Error("Error getting worktree: %s", err)
 				continue
 			}
+			found = true
+			break
+		}
 
-			// create a list of branches to look for
-			trialBranches := []string{
-				fmt.Sprintf("refs/tags/%s", pluginObject.Version),
-				fmt.Sprintf("refs/heads/%s", pluginObject.Version),
-				pluginObject.Version,
-			}
+		// at this point we tried using r.ResolveRevision(plumbing.Revision(gitRef))
+		// but despite what the comments say it doesn't seem to automatically resolve
 
-			found := false
-			for _, ref := range trialBranches {
-				// on error try and check out revision directly
-				err = w.Checkout(&git.CheckoutOptions{
-					Branch: plumbing.ReferenceName(ref),
-				})
-				if err != nil {
-					continue
-				}
+		// direct checkout hash
+		if !found {
+			localRef := plumbing.NewHash(gitRef)
+			checkoutErr := w.Checkout(&git.CheckoutOptions{
+				Hash: localRef,
+			})
+			if checkoutErr == nil && !localRef.IsZero() {
 				found = true
-				break
 			}
+		}
 
-			// at this point we tried using r.ResolveRevision(plumbing.Revision(gitRef))
-			// but despite what the comments say it doesn't seem to automatically resolve
-
-			// direct checkout hash
-			if !found {
-				localRef := plumbing.NewHash(pluginObject.Version)
-				err = w.Checkout(&git.CheckoutOptions{
-					Hash: localRef,
-				})
-				if err == nil && !localRef.IsZero() {
-					found = true
-				}
-			}
-
-			// skip if not found
-			if !found {
-				kcorelog.Error("Could not find ref %s for plugin %s", pluginObject.Version, pluginName)
-				continue
-			}
+		// skip if not found
+		if !found {
+			kcorelog.Error("Could not find git revision '%s' for plugin %s", gitRef, plugin)
+			os.Exit(1)
 		}
 
 		ksanity.CheckIfError(err)
