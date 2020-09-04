@@ -16,14 +16,18 @@ package cmd
 
 import (
 	"fmt"
+	kcorelog "github.com/CodeSparta/koffer-go/plugins/log"
+	"github.com/CodeSparta/sparta-libs/config"
 	"github.com/spf13/cobra"
 	"os"
+	"path/filepath"
+	"strings"
 
-	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
 )
 
 var cfgFile string
+var spartaConfig *config.SpartaConfig
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -54,7 +58,7 @@ func init() {
 	// Define flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.koffer/config.yml)")
+	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "config file (default is $HOME/.koffer/config.yml)")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
@@ -63,26 +67,52 @@ func init() {
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
-	if cfgFile != "" {
-		// Use config file from the flag.
-		viper.SetConfigFile(cfgFile)
-	} else {
-		// Find home directory.
-		home, err := homedir.Dir()
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-
-		// Search config in home directory with name ".koffer/config.yml" (without extension).
-		viper.AddConfigPath(home)
-		viper.SetConfigName(".koffer/config.yml")
-	}
-
 	viper.AutomaticEnv() // read in environment variables that match
 
-	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+	configFile := ""
+	if len(cfgFile) > 0 {
+		configFile = cfgFile
+	} else {
+		configFile = defaultConfigFile
 	}
+	readFile := configFile
+	// check and see if a config file exists, if a config file does not
+	// exist then it might be an error if none is found
+	if _, err := os.Stat(readFile); os.IsNotExist(err) {
+		// if a config file was specified it needs to exist
+		if len(cfgFile) > 0 {
+			kcorelog.Error("A configuration file ('%s') was specified with --config but does not exist", cfgFile)
+			os.Exit(1)
+		}
+		// but we set it to "" (which means we can't find the default config) and move on
+		readFile = ""
+	}
+
+	// search for file if no absolute path is given
+	locations := make([]string, 0)
+	sep := fmt.Sprintf("%c", os.PathSeparator)
+	if strings.Index(readFile, sep) < 0 {
+		wd, _ := os.Getwd()
+		wd, _ = filepath.Abs(wd)
+		locations = append(locations, wd)
+	}
+
+	// if a config file is found then it should be loaded both into the sparta environment and
+	// as the config file for the command run
+	if len(readFile) > 0 {
+		readFile, _ = filepath.Abs(readFile)
+		fmt.Printf("filepath: %s\n", readFile)
+		var err error
+		if filepath.IsAbs(readFile) {
+			locations = append(locations, filepath.Dir(readFile))
+		}
+		spartaConfig, err = config.ViperSpartaConfig(viper.GetViper(), readFile, locations...)
+		if err != nil {
+			kcorelog.Error("Error loading configuration file: %s", err)
+			os.Exit(1)
+		}
+	}
+
+	// the file that should have been read (will either be an existing -c file or the path to the default file)
+	cfgFile = configFile
 }
