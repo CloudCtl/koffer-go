@@ -58,7 +58,12 @@ func init() {
 	// Define flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
-	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "config file (default is $HOME/.koffer/config.yml)")
+	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", defaultConfigFile, "Full path to configuration file")
+
+	// Define S3 configuration flags for use if the configuration file is stored in s3
+	rootCmd.PersistentFlags().String(config.ViperS3Secret, "", "The S3 Secret to use")
+	rootCmd.PersistentFlags().String(config.ViperS3Key, "", "The S3 Key to use")
+	rootCmd.PersistentFlags().String(config.ViperS3Region, "", "The S3 Region to use")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
@@ -76,17 +81,6 @@ func initConfig() {
 		configFile = defaultConfigFile
 	}
 	readFile := configFile
-	// check and see if a config file exists, if a config file does not
-	// exist then it might be an error if none is found
-	if _, err := os.Stat(readFile); os.IsNotExist(err) {
-		// if a config file was specified it needs to exist
-		if len(cfgFile) > 0 {
-			kcorelog.Error("A configuration file ('%s') was specified with --config but does not exist", cfgFile)
-			os.Exit(1)
-		}
-		// but we set it to "" (which means we can't find the default config) and move on
-		readFile = ""
-	}
 
 	// search for file if no absolute path is given
 	locations := make([]string, 0)
@@ -97,20 +91,11 @@ func initConfig() {
 		locations = append(locations, wd)
 	}
 
-	// if a config file is found then it should be loaded both into the sparta environment and
-	// as the config file for the command run
-	if len(readFile) > 0 {
-		readFile, _ = filepath.Abs(readFile)
-		fmt.Printf("filepath: %s\n", readFile)
-		var err error
-		if filepath.IsAbs(readFile) {
-			locations = append(locations, filepath.Dir(readFile))
-		}
-		spartaConfig, err = config.ViperSpartaConfig(viper.GetViper(), readFile, locations...)
-		if err != nil {
-			kcorelog.Error("Error loading configuration file: %s", err)
-			os.Exit(1)
-		}
+	var err error
+	spartaConfig, err = config.ViperSpartaConfig(viper.GetViper(), readFile, locations...)
+	if err != nil {
+		kcorelog.Error("Error loading configuration file: %s", err)
+		os.Exit(1)
 	}
 
 	// the file that should have been read (will either be an existing -c file or the path to the default file)
