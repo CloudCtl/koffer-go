@@ -81,19 +81,6 @@ func initConfig() {
 		configFile = defaultConfigFile
 	}
 	readFile := configFile
-	// check and see if a config file exists, if a config file does not
-	// exist then it might be an error if none is found
-	if len(readFile) > 0 {
-		if _, err := os.Stat(readFile); os.IsNotExist(err) {
-			// if a config file was specified it needs to exist
-			if readFile != defaultConfigFile {
-				kcorelog.Error("A configuration file ('%s') was specified with --config but does not exist", cfgFile)
-				os.Exit(1)
-			}
-			// but we set it to "" (which means we can't find the default config) and move on
-			readFile = ""
-		}
-	}
 
 	// search for file if no absolute path is given
 	locations := make([]string, 0)
@@ -104,19 +91,11 @@ func initConfig() {
 		locations = append(locations, wd)
 	}
 
-	// as the config file for the command run
-	if len(readFile) > 0 {
-		readFile, _ = filepath.Abs(readFile)
-		fmt.Printf("filepath: %s\n", readFile)
-		var err error
-		if filepath.IsAbs(readFile) {
-			locations = append(locations, filepath.Dir(readFile))
-		}
-		spartaConfig, err = config.ViperSpartaConfig(viper.GetViper(), readFile, locations...)
-		if err != nil {
-			kcorelog.Error("Error loading configuration file: %s", err)
-			os.Exit(1)
-		}
+	var err error
+	spartaConfig, err = config.ViperSpartaConfig(viper.GetViper(), readFile, locations...)
+	if err != nil {
+		kcorelog.Error("Error loading configuration file: %s", err)
+		os.Exit(1)
 	}
 
 	// the file that should have been read (will either be an existing -c file or the path to the default file)
