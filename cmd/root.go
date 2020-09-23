@@ -93,9 +93,19 @@ func initConfig() {
 
 	var err error
 	spartaConfig, err = config.ViperSpartaConfig(viper.GetViper(), readFile, locations...)
+	// something went wrong in the basic configuration loading and this block decides if it is
+	// relevant to the bundle command
 	if err != nil {
-		kcorelog.Error("Error loading configuration file: %s", err)
-		os.Exit(1)
+		// when the readFile value is the same as the default config file AND the configuration
+		// file does not exist it will skip the error. this allows for the case that the
+		// default configuration file DOES exist but contains errors
+		if _, statErr := os.Stat(readFile); readFile == defaultConfigFile && os.IsNotExist(statErr) {
+			// no-op here is deliberate. this seems easier and more straight forward than
+			// inverting the above condition.
+		} else {
+			kcorelog.Error("Error loading configuration file: %s", err)
+			os.Exit(1)
+		}
 	}
 
 	// the file that should have been read (will either be an existing -c file or the path to the default file)
