@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/CodeSparta/koffer-go/plugins/log"
+	"github.com/containercraft/koffer-go/plugins/log"
 )
 
 // CheckArgs should be used to sanity check cmd line arguments

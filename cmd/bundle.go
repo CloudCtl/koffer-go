@@ -18,7 +18,7 @@ package cmd
 import (
 	"flag"
 	"fmt"
-	"github.com/CodeSparta/sparta-libs/config"
+	"github.com/containercraft/sparta-libs/config"
 	"github.com/mitchellh/go-homedir"
 	"gopkg.in/src-d/go-git.v4"
 	gitconfig "gopkg.in/src-d/go-git.v4/config"
@@ -30,11 +30,11 @@ import (
 	"strings"
 	"sync"
 
-	kpullsecret "github.com/CodeSparta/koffer-go/plugins/auth"
-	"github.com/CodeSparta/koffer-go/plugins/err"
-	kcorelog "github.com/CodeSparta/koffer-go/plugins/log"
+	kpullsecret "github.com/containercraft/koffer-go/plugins/auth"
+	"github.com/containercraft/koffer-go/plugins/err"
+	kcorelog "github.com/containercraft/koffer-go/plugins/log"
 	"github.com/spf13/cobra"
-	//  "github.com/codesparta/koffer/entrypoint/src"
+	//  "github.com/containercraft/koffer/entrypoint/src"
 )
 
 var (
@@ -87,7 +87,7 @@ func init() {
 	rootCmd.AddCommand(bundleCmd)
 	bundleCmd.Flags().BoolP("help", "h", false, "koffer bundle help")
 	bundleCmd.Flags().StringVarP(&service, "service", "s", "github.com", "Git Server")
-	bundleCmd.Flags().StringVarP(&user, "user", "u", "CodeSparta", "Repo {User,Organization}/path")
+	bundleCmd.Flags().StringVarP(&user, "user", "u", "containercraft", "Repo {User,Organization}/path")
 	bundleCmd.Flags().StringVarP(&dir, "dir", "d", kofferdir, "Clone Path")
 	bundleCmd.Flags().StringArrayVarP(&plugins, "plugin", "p", []string{}, "Name of plugin repository to use with optional @version/branch/ref.")
 	bundleCmd.Flags().StringVarP(&defaultGitRef, "version", "v", "master", "Default git tag/head/ref to use for all plugin repositories.")
