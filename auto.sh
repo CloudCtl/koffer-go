@@ -4,5 +4,5 @@ sudo /usr/bin/podman run \
     --volume $(pwd)/bin:/tmp/bin:z \
     --entrypoint /root/dev/build.sh \
     --volume $(pwd):/root/dev:z \
-  docker.io/ocpredshift/red-gotools
+  docker.io/containercraft/golang
     
