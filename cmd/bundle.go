@@ -87,7 +87,7 @@ func init() {
 	rootCmd.AddCommand(bundleCmd)
 	bundleCmd.Flags().BoolP("help", "h", false, "koffer bundle help")
 	bundleCmd.Flags().StringVarP(&service, "service", "s", "github.com", "Git Server")
-	bundleCmd.Flags().StringVarP(&user, "user", "u", "containercraft", "Repo {User,Organization}/path")
+	bundleCmd.Flags().StringVarP(&user, "user", "u", "codesparta", "Repo {User,Organization}/path")
 	bundleCmd.Flags().StringVarP(&dir, "dir", "d", kofferdir, "Clone Path")
 	bundleCmd.Flags().StringArrayVarP(&plugins, "plugin", "p", []string{}, "Name of plugin repository to use with optional @version/branch/ref.")
 	bundleCmd.Flags().StringVarP(&defaultGitRef, "version", "v", "master", "Default git tag/head/ref to use for all plugin repositories.")
