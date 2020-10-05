@@ -11,6 +11,6 @@ ${goCmd} build -o bin/koffer
 mv ./dev ./bin/koffer 2>/dev/null
 cp -f ./bin/koffer /usr/bin/koffer 2>/dev/null
 cp -f ./bin/koffer /tmp/bin/koffer 2>/dev/null
-exit_code="$?"
-echo "exit code: ${exit_code}"
-exit 0
+#exit_code="$?"
+#echo "exit code: ${exit_code}"
+#exit 0
