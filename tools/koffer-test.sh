@@ -10,8 +10,8 @@ mkdir -p /tmp/bundle ; \
 run_test () {
 run_home=${HOME}
 sudo podman run -it --rm --pull always \
+    --volume /tmp/bundle:/root/bundle:z \
     --volume ${run_home}/.docker:/root/.docker:z \
-    --volume /tmp/bundle:/root/deploy/bundle:z \
     --volume $(pwd)/bin/koffer:/usr/bin/koffer:z \
   docker.io/containercraft/koffer bundle $@
 }
