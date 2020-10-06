@@ -334,7 +334,7 @@ func cmdRegistryStart() {
 // Run Koffer Plugin from site.yml
 func cmdPluginRun() {
 	// Run Plugin
-	cmd := exec.Command("./site.yml")
+	cmd := exec.Command("./collector/site.yml")
 	var stdout, stderr []byte
 	var errStdout, errStderr error
 	stdoutIn, _ := cmd.StdoutPipe()
