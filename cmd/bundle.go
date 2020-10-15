@@ -30,9 +30,9 @@ import (
 	"strings"
 	"sync"
 
-	kpullsecret "github.com/containercraft/koffer-go/plugins/auth"
-	"github.com/containercraft/koffer-go/plugins/err"
-	kcorelog "github.com/containercraft/koffer-go/plugins/log"
+	kpullsecret "github.com/containercraft/sparta-libs/pullsecret"
+	ksanity "github.com/containercraft/sparta-libs/err"
+	kcorelog "github.com/containercraft/sparta-libs/log"
 	"github.com/spf13/cobra"
 	//  "github.com/containercraft/koffer/entrypoint/src"
 )
