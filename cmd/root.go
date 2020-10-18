@@ -16,7 +16,7 @@ package cmd
 
 import (
 	"fmt"
-	kcorelog "github.com/containercraft/koffer-go/plugins/log"
+	kcorelog "github.com/containercraft/sparta-libs/log"
 	"github.com/containercraft/sparta-libs/config"
 	"github.com/spf13/cobra"
 	"os"
