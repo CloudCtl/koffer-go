@@ -18,11 +18,6 @@ package cmd
 import (
 	"flag"
 	"fmt"
-	"github.com/containercraft/sparta-libs/config"
-	"github.com/mitchellh/go-homedir"
-	"gopkg.in/src-d/go-git.v4"
-	gitconfig "gopkg.in/src-d/go-git.v4/config"
-	"gopkg.in/src-d/go-git.v4/plumbing"
 	"log"
 	"os"
 	"os/exec"
@@ -30,10 +25,15 @@ import (
 	"strings"
 	"sync"
 
-	kpullsecret "github.com/containercraft/sparta-libs/pullsecret"
+	"github.com/containercraft/sparta-libs/config"
 	ksanity "github.com/containercraft/sparta-libs/err"
 	kcorelog "github.com/containercraft/sparta-libs/log"
+	kpullsecret "github.com/containercraft/sparta-libs/pullsecret"
+	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
+	"gopkg.in/src-d/go-git.v4"
+	gitconfig "gopkg.in/src-d/go-git.v4/config"
+	"gopkg.in/src-d/go-git.v4/plumbing"
 	//  "github.com/containercraft/koffer/entrypoint/src"
 )
 
@@ -44,6 +44,10 @@ var (
 	dir           string
 	plugins       []string
 	defaultGitRef string
+)
+
+const (
+	defaultRunRegCmd string = "/usr/bin/run_registry.sh"
 )
 
 var bundleCmd = &cobra.Command{
@@ -166,7 +170,7 @@ func core() {
 		kofferLoop(pluginName)
 
 		// build url from vars
-		gitslice := []string{"https://", service, "/", user, "/", pluginName}
+		gitslice := []string{"https://", pluginObject.Service, "/", pluginObject.Organization, "/", pluginName}
 		url := strings.Join(gitslice, "")
 
 		runvars := "\n" +
@@ -323,7 +327,11 @@ func RemoveContents(dir string) error {
 
 func cmdRegistryStart() {
 	// Start Internal Registry Service
-	registry := exec.Command("/usr/bin/run_registry.sh")
+	runRegCmd, found := os.LookupEnv("RUN_REG_CMD")
+	if !found {
+		runRegCmd = defaultRunRegCmd
+	}
+	registry := exec.Command(runRegCmd)
 	err := registry.Start()
 	if err != nil {
 		log.Fatal(err)
