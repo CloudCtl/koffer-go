@@ -49,7 +49,10 @@ github.com/cloudctl/sparta-libs v0.0.0-20200911214328-401c770d4e52 h1:y/Rvk6MxTe
 github.com/cloudctl/sparta-libs v0.0.0-20200911214328-401c770d4e52/go.mod h1:9oSR/d3NGoCc9STnK2vOeTTDtNgYJ1zVooIsiKYYjk4=
 github.com/cloudctl/sparta-libs v0.0.0-20201005182245-162f9b99e269 h1:PjHHbj1hxl/gNo9xrVBjsteQtAg8VAJux/Fvd+NE19g=
 github.com/cloudctl/sparta-libs v0.0.0-20201005182245-162f9b99e269/go.mod h1:mVvaNr8ad7gP5KfGR03ZVF00FEEwnOEFK7GJ5xR64cw=
-github.com/containercraft/sparta-libs v0.0.0-20201005182245-162f9b99e269/go.mod h1:mVvaNr8ad7gP5KfGR03ZVF00FEEwnOEFK7GJ5xR64cw=
+github.com/cloudctl/sparta-libs v0.0.0-20201005182245-162f9b99e269/go.mod h1:mVvaNr8ad7gP5KfGR03ZVF00FEEwnOEFK7GJ5xR64cw=
+github.com/cloudctl/sparta-libs v0.0.0-20201005182245-162f9b99e269/go.mod h1:mVvaNr8ad7gP5KfGR03ZVF00FEEwnOEFK7GJ5xR64cw=
+github.com/cloudctl/sparta-libs v0.0.0-20201107074233-c7e48d9c4152 h1:ZNwHc/06cB4fAg4dOPJXHAbSWQMZcitqYOUezWxLW5U=
+github.com/cloudctl/sparta-libs v0.0.0-20201107074233-c7e48d9c4152/go.mod h1:FuNUVdDpn+S/pV+nj0nvMrv03rLTh+1DnvKxRzCbu2w=
 github.com/coreos/bbolt v1.3.2/go.mod h1:iRUV2dpdMOn7Bo10OQBFzIJO9kkE559Wcmn+qkEiiKk=
 github.com/coreos/etcd v3.3.10+incompatible/go.mod h1:uF7uidLiAD3TWHmW31ZFd/JWoc32PjwdhPthX9715RE=
 github.com/coreos/etcd v3.3.13+incompatible/go.mod h1:uF7uidLiAD3TWHmW31ZFd/JWoc32PjwdhPthX9715RE=

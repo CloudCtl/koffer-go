@@ -3,7 +3,7 @@ module github.com/cloudctl/koffer-go
 go 1.14
 
 require (
-	github.com/containercraft/sparta-libs v0.0.0-20201005182245-162f9b99e269
+	github.com/cloudctl/sparta-libs v0.0.0-20201107074233-c7e48d9c4152
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/mitchellh/mapstructure v1.3.3 // indirect
