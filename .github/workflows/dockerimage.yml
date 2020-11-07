@@ -1,0 +1,55 @@
+name: EntrypointBuilder
+on:
+  push:
+    branches: 
+      - main
+  pull_request:
+    branches: 
+      - main
+  schedule:
+    - cron: '0 12 * * *'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Variable | Export Build Date
+      run: |
+        export varrundate="$(date +%y%m%d%I%M%S)"
+        echo "::set-env name=varrundate::$varrundate"
+    - name: Variable | Git Commit Hash
+      run: |
+        export githash="$(git log -1 --pretty=%h)"
+        echo "::set-env name=githash::$githash"
+    - name: Docker.io + Quay.io Login
+      run: |
+        echo "${{ secrets.DOCKERHUB_PASSWD }}" | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin quay.io; \
+        echo "${{ secrets.DOCKERHUB_PASSWD }}" | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin docker.io 
+    - name: Build Entrypoint
+      run: |
+        docker run --rm \
+            --volume $(pwd):/root/dev:z \
+            --volume $(pwd)/bin:/tmp/bin:z \
+            --entrypoint /root/dev/build.sh \
+          docker.io/${{ secrets.DOCKERHUB_ORGANIZATION }}/golang
+    - name: Stash Entrypoint into cradle | koffer-go
+      run: |
+        docker build . \
+            --force-rm \
+            --file ./Dockerfile \
+            --tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION }}/koffer-go \
+            --tag docker.io/${{ secrets.DOCKERHUB_ORGANIZATION }}/koffer-go \
+            --tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION }}/koffer-go:latest \
+            --tag docker.io/${{ secrets.DOCKERHUB_ORGANIZATION }}/koffer-go:latest \
+            --tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION }}/koffer-go:latest-${{ env.varrundate }}-${{ env.githash }} \
+            --tag docker.io/${{ secrets.DOCKERHUB_ORGANIZATION }}/koffer-go:latest-${{ env.varrundate }}-${{ env.githash }}
+    - name: Image Push | koffer-go | quay.io
+      run: |
+        docker push quay.io/${{ secrets.DOCKERHUB_ORGANIZATION }}/koffer-go;                                 \
+        docker push quay.io/${{ secrets.DOCKERHUB_ORGANIZATION }}/koffer-go:latest;                                 \
+        docker push quay.io/${{ secrets.DOCKERHUB_ORGANIZATION }}/koffer-go:latest-${{ env.varrundate }}-${{ env.githash }};
+    - name: Image Push | koffer-go | docker.io
+      run: |
+        docker push docker.io/${{ secrets.DOCKERHUB_ORGANIZATION }}/koffer-go;                                 \
+        docker push docker.io/${{ secrets.DOCKERHUB_ORGANIZATION }}/koffer-go:latest;                                 \
+        docker push docker.io/${{ secrets.DOCKERHUB_ORGANIZATION }}/koffer-go:latest-${{ env.varrundate }}-${{ env.githash }};
