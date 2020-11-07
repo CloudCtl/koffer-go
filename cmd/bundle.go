@@ -25,16 +25,16 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/containercraft/sparta-libs/config"
-	ksanity "github.com/containercraft/sparta-libs/err"
-	kcorelog "github.com/containercraft/sparta-libs/log"
-	kpullsecret "github.com/containercraft/sparta-libs/pullsecret"
+	"github.com/cloudctl/sparta-libs/config"
+	ksanity "github.com/cloudctl/sparta-libs/err"
+	kcorelog "github.com/cloudctl/sparta-libs/log"
+	kpullsecret "github.com/cloudctl/sparta-libs/pullsecret"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"gopkg.in/src-d/go-git.v4"
 	gitconfig "gopkg.in/src-d/go-git.v4/config"
 	"gopkg.in/src-d/go-git.v4/plumbing"
-	//  "github.com/containercraft/koffer/entrypoint/src"
+	//  "github.com/cloudctl/koffer/entrypoint/src"
 )
 
 var (

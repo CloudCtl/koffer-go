@@ -5,7 +5,7 @@ Koffer-go is the Golang entrypoint to the Koffer image. Koffer builds offline in
 
 ## Command Line Usage
 ```
-root@mordor:~$ podman run -it --rm docker.io/containercraft/koffer bundle -h
+root@mordor:~$ podman run -it --rm docker.io/cloudctl/koffer bundle -h
 Koffer Engine Bundle:
   Bundle is intended to run against koffer collector plugin
   plugins to build artifact bundles capable of transporting all
@@ -41,7 +41,7 @@ Flags:
   -p, --plugin stringArray   Name of plugin repository to use with optional @gitref.
   -s, --service string       Git Server (default "github.com")
   -S, --silent               Ask for pull secret, if true uses existing value in /root/.docker/config.json
-  -u, --user string          Repo {User,Organization}/path (default "containercraft")
+  -u, --user string          Repo {User,Organization}/path (default "cloudctl")
 
 Global Flags:
       --config string   config file (default is $HOME/.koffer/config.yml)
@@ -55,27 +55,27 @@ exist with the same name the tag will be chosen.
 Examples:
 ```bash
 # creating a koffer bundle for a tag (refs/tag/v1.0)
-root@mordor:~$ podman run -it --rm docker.io/containercraft/koffer bundle --plugin collector-infra@v1.0
+root@mordor:~$ podman run -it --rm docker.io/cloudctl/koffer bundle --plugin collector-infra@v1.0
 # creating a koffer bundle for a branch (refs/branches/testing)
-root@mordor:~$ podman run -it --rm docker.io/containercraft/koffer bundle --plugin collector-infra@testing
+root@mordor:~$ podman run -it --rm docker.io/cloudctl/koffer bundle --plugin collector-infra@testing
 # creating a koffer bundle for a full git hash (for a specific commit)
-root@mordor:~$ podman run -it --rm docker.io/containercraft/koffer bundle --plugin collector-infra@3443e502878b8e3ffc9b405b6648428a208a21b6
+root@mordor:~$ podman run -it --rm docker.io/cloudctl/koffer bundle --plugin collector-infra@3443e502878b8e3ffc9b405b6648428a208a21b6
 ```
 
 It is possible to set a version to be used for all plugins:
 ```bash
 # using the v1.0 tag for both plugins
-root@mordor:~$ podman run -it --rm docker.io/containercraft/koffer bundle --version v1.0 --plugin collector-infra --plugin collector-apps
+root@mordor:~$ podman run -it --rm docker.io/cloudctl/koffer bundle --version v1.0 --plugin collector-infra --plugin collector-apps
 ```
 
 Or to mix and match:
 ```bash
 # using the v1.0 tag for infra/operators plugins but the testing branch for collector-apps
-root@mordor:~$ podman run -it --rm docker.io/containercraft/koffer bundle --version v1.0 --plugin collector-infra --plugin collector-apps@testing --plugin collector-operators
+root@mordor:~$ podman run -it --rm docker.io/cloudctl/koffer bundle --version v1.0 --plugin collector-infra --plugin collector-apps@testing --plugin collector-operators
 ```
 
 ## Configuration File
-Koffer uses the standard Sparta configuration format from [sparta-libs](https://github.com/containercraft/sparta-libs). The 
+Koffer uses the standard Sparta configuration format from [sparta-libs](https://github.com/cloudctl/sparta-libs). The 
 `koffer` section of the configuration file configures koffer's behavior.
 
 A sample section might look like:
@@ -86,20 +86,20 @@ koffer:
   silent: true
   # a map of plugin names to the configuration for that plugin
   plugins:
-    # specifies github.com/containercraft/collector-infra at version (tag then branch) 1.0.0
+    # specifies github.com/cloudctl/collector-infra at version (tag then branch) 1.0.0
     collector-infra:
       version: 1.0.0
       service: github.com
-      organization: containercraft
-    # specifies github.com/containercraft/collector-operators at version (tag then branch) 1.0.0
+      organization: cloudctl
+    # specifies github.com/cloudctl/collector-operators at version (tag then branch) 1.0.0
     collector-operators:
       version: 1.0.0
       service: github.com
-      organization: containercraft
-    # specifies github.com/containercraft/collector-apps at branch testing, using "branch" directly does not check tags
+      organization: cloudctl
+    # specifies github.com/cloudctl/collector-apps at branch testing, using "branch" directly does not check tags
     collector-apps:
       service: github.com
-      organization: containercraft
+      organization: cloudctl
       branch: testing
 ```
 
@@ -108,11 +108,11 @@ the configuration example (in $HOME/.koffer/config.yml, the default location) ab
 
 ```bash
 # run the plain configuration from ~/.koffer/config.yml
-root@mordor:~$ podman run -it --rm -v ~/config.yml:~/.koffer/config.yml docker.io/containercraft/koffer bundle
+root@mordor:~$ podman run -it --rm -v ~/config.yml:~/.koffer/config.yml docker.io/cloudctl/koffer bundle
 # override the version to 1.1.0 for _all_ plugins
-root@mordor:~$ podman run -it --rm -v ~/config.yml:~/.koffer/config.yml docker.io/containercraft/koffer bundle --version 1.1.0
+root@mordor:~$ podman run -it --rm -v ~/config.yml:~/.koffer/config.yml docker.io/cloudctl/koffer bundle --version 1.1.0
 # override just collector-apps to use "unstable" branch
-root@mordor:~$ podman run -it --rm -v ~/config.yml:~/.koffer/config.yml docker.io/containercraft/koffer bundle --plugin collector-apps@unstable
+root@mordor:~$ podman run -it --rm -v ~/config.yml:~/.koffer/config.yml docker.io/cloudctl/koffer bundle --plugin collector-apps@unstable
 ```
 
 

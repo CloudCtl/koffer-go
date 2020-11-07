@@ -13,7 +13,7 @@ sudo podman run -it --rm --pull always \
     --volume /tmp/bundle:/root/bundle:z \
     --volume ${run_home}/.docker:/root/.docker:z \
     --volume $(pwd)/bin/koffer:/usr/bin/koffer:z \
-  docker.io/containercraft/koffer bundle $@
+  docker.io/cloudctl/koffer bundle $@
 }
 
 run_test $@

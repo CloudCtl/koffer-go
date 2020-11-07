@@ -6,4 +6,4 @@ podman run --privileged \
     --volume ~/.bashrc:/root/.bashrc \
     --volume ~/.gitconfig:/root/.gitconfig \
     --name koffer-go --hostname koffer-go \
-  docker.io/containercraft/golang -c /usr/bin/tmux
+  docker.io/cloudctl/golang -c /usr/bin/tmux

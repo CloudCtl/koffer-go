@@ -15,7 +15,7 @@ limitations under the License.
 */
 package main
 
-import "github.com/containercraft/koffer-go/cmd"
+import "github.com/cloudctl/koffer-go/cmd"
 
 func main() {
 	cmd.Execute()
