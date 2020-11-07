@@ -1,5 +1,5 @@
 #!/bin/bash
-podman run --privileged \
+podman run --pull always --privileged \
     -it --rm --net=host \
     --volume $(pwd):/root/dev \
     --volume ~/.ssh:/root/.ssh \
