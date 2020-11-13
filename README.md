@@ -1,3 +1,4 @@
+![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/cloudctl/koffer-go/koffer-go/main?style=plastic)
 # Koffer-Go
 
 ## Description
