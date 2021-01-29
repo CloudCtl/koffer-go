@@ -280,7 +280,7 @@ func core() {
 		fmt.Println(commit)
 
 		// Run Koffer Plugin
-		cmdPluginRun()
+		cmdPluginRun(pluginObject)
 	}
 }
 
@@ -340,9 +340,17 @@ func cmdRegistryStart() {
 }
 
 // Run Koffer Plugin from site.yml
-func cmdPluginRun() {
+func cmdPluginRun(plugin config.Plugin) {
 	// Run Plugin
 	cmd := exec.Command("./collector/site.yml")
+
+	// if a plugin environment is specified then convert to pairs
+	// and add them ass the environment variable for the command
+	// execution
+	if plugin.Env != nil && len(plugin.Env) > 0 {
+		cmd.Env = plugin.Env.List()
+	}
+
 	var stdout, stderr []byte
 	var errStdout, errStderr error
 	stdoutIn, _ := cmd.StdoutPipe()
